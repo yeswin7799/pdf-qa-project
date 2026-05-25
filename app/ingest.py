@@ -1,7 +1,7 @@
 import os
 from pypdf import PdfReader
 from langchain_text_splitters  import RecursiveCharacterTextSplitter
-from openai import OpenAI
+from sentence_transformers import SentenceTransformer
 import chromadb
 from dotenv import load_dotenv
 
@@ -24,15 +24,19 @@ def split_text(text: str) -> list[str]:
     return splitter.split_text(text)
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
-    client = OpenAI()
-    response = client.embeddings.create(
-        model="text-embedding-ada-002",
-        input=texts
-    )
-    return [item.embedding for item in response.data]
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+    embeddings = model.encode(texts)
+    return embeddings.tolist()
 
 def store_in_chroma(chunks: list[str], embeddings: list[list[float]], collection_name: str = "pdf_chunks"):
     chroma_client = chromadb.PersistentClient(path="./data/chroma_store")
+     # Delete old collection if it exists (avoids dimension mismatch)
+    try:
+        chroma_client.delete_collection(name=collection_name)
+        print("Old collection deleted.")
+    except:
+        pass
+    
     collection = chroma_client.get_or_create_collection(name=collection_name)
 
     ids = [f"chunk_{i}" for i in range(len(chunks))]

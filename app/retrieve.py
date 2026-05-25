@@ -1,6 +1,6 @@
 # app/retrieve.py
 
-from openai import OpenAI
+from sentence_transformers import SentenceTransformer
 import chromadb
 from dotenv import load_dotenv
 
@@ -9,12 +9,9 @@ load_dotenv()
 #client = OpenAI()
 
 def embed_query(query: str) -> list[float]:
-    client = OpenAI()
-    response = client.embeddings.create(
-        model="text-embedding-ada-002",
-        input=[query]
-    )
-    return response.data[0].embedding
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+    embedding = model.encode([query])
+    return embedding[0].tolist()
 
 def retrieve(query: str, top_k: int = 3) -> list[str]:
     query_vector = embed_query(query)
