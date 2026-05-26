@@ -5,4 +5,6 @@ chromadb
 openai
 python-dotenv
 langchain-text-splitters
-pip install python-multipart
+python-multipart
+boto3
+sentence-transformers
