@@ -1,0 +1,8 @@
+import streamlit as st
+import requests
+
+BACKEND_URL = "http://localhost:8000"
+
+st.set_page_config(page_title="PDF Q&A", page_icon="📄")
+st.title("📄 PDF Question & Answer")
+st.caption("Upload a PDF, then ask questions about it.")
