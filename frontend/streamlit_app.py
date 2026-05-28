@@ -71,4 +71,4 @@ if st.session_state.get("pdf_ready"):
             st.divider()
 
 else:
-    st.info("Upload and ingest a PDF first to enable questions.")
+    st.info("Upload and ingest a PDF first to enable questions.
