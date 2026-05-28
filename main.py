@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
+from app.guardrails import validate_question
 from pydantic import BaseModel
 import logging
 
@@ -33,6 +34,13 @@ class AskRequest(BaseModel):
 @app.post("/ask")
 async def ask_question(payload: AskRequest):
     logger.info(f"Question received | question={payload.question}")
+
+    # Layer 1 — run guardrail before anything else
+    is_valid, error_message = validate_question(payload.question)
+    if not is_valid:
+        logger.warning(f"Question rejected by guardrail | reason={error_message}")
+        return {"answer": error_message}
+
     try:
         chunks = retrieve(payload.question)
         answer = generate(payload.question, chunks)
