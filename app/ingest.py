@@ -2,7 +2,7 @@ import os
 import boto3
 import io
 from pypdf import PdfReader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters  import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 import chromadb
 from dotenv import load_dotenv
@@ -77,4 +77,5 @@ def ingest(file_bytes: bytes, filename: str):
     print("Storing in ChromaDB...")
     store_in_chroma(chunks, embeddings)
 
-    print("Ingestion complete!")    
+    print("Ingestion complete!")   
+    return {"message": f"Successfully ingested {filename}"}
